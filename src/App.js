@@ -11,11 +11,13 @@ class App extends Component {
 		super(props);
 		this.state = {
 			products: [],
+			load: false
 		};
 		this.handleSearch = this.handleSearch.bind(this);
 	}
 
 	handleSearch(search) {
+		this.setState({ load: true });
 		axios
 			.get(API, {
 				params: {
@@ -24,8 +26,8 @@ class App extends Component {
 			})
 			.then((res) => res.data)
 			.then((products) => {
-				Promise.all(products).then((values) => this.setState({products: values}));
-				
+				Promise.all(products).then((values) => this.setState({ products: values, load: false }));
+
 			})
 			.catch((error) => {
 				if (error.response) {
@@ -44,11 +46,18 @@ class App extends Component {
 	}
 
 	render() {
-		const list = (!this.state.products || !this.state.products.length) ? null : (<ProductList products={this.state.products} />);
+		let list = null;
+		const { products } = this.state;
+		if (products && products.length > 0) {
+			list = <ProductList products={products} />;
+		}
 		return (
-			<div className="App">
-				<h1 className="text-center my-5">Pharma Crawler</h1>
-				<SearchBar onSave={this.handleSearch} />
+			<div className="App d-flex flex-column justify-content-center" style={{ minHeight: '100vh' }}>
+				<div className="my-5">
+					<div className="text-center"><img id="spider" alt="spider" src="https://cdn1.iconfinder.com/data/icons/web-development-and-programming/64/programming_development_web_crawler-512.png"></img></div>
+					<h1 className="text-center">Pharma Crawler</h1>
+					<SearchBar onSave={this.handleSearch} load={this.state.load} />
+				</div>
 				{list}
 			</div>
 		);
