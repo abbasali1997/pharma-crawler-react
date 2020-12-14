@@ -18,9 +18,12 @@
 }
 
 .card-title {
-	font-size: 0.9rem;
     height: 3rem;
     padding: 0 1%;
+}
+
+.card-body{
+	font-size: 0.9rem;
 }
 
 .card:hover .productImg{
